@@ -1,5 +1,5 @@
 {
-  "name": "@chunyinli/react-native-esc-pos-printer",
+  "name": "react-native-esc-pos-printer-chunyinli",
   "version": "4.5.1",
   "description": "An unofficial React Native library for printing on an EPSON TM printer with the Epson ePOS SDK for iOS and Epson ePOS SDK for Android",
   "main": "./lib/module/index.js",
