@@ -10659,41 +10659,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-esc-pos-printer-example@workspace:example":
+"react-native-esc-pos-printer-chunyinli@workspace:.":
   version: 0.0.0-use.local
-  resolution: "react-native-esc-pos-printer-example@workspace:example"
-  dependencies:
-    "@babel/core": ^7.25.2
-    "@babel/preset-env": ^7.25.3
-    "@babel/runtime": ^7.25.0
-    "@react-native-community/cli": 15.0.1
-    "@react-native-community/cli-platform-android": 15.0.1
-    "@react-native-community/cli-platform-ios": 15.0.1
-    "@react-native/babel-preset": 0.76.5
-    "@react-native/metro-config": 0.76.5
-    "@react-native/typescript-config": 0.76.5
-    "@react-navigation/native": ^6.1.9
-    "@react-navigation/native-stack": ^6.9.17
-    react: 18.3.1
-    react-native: 0.76.5
-    react-native-builder-bob: ^0.32.0
-    react-native-image-picker: ^7.1.0
-    react-native-safe-area-context: ^4.7.4
-    react-native-screens: ^3.27.0
-    react-native-view-shot: ^3.8.0
-  languageName: unknown
-  linkType: soft
-
-"react-native-esc-pos-printer-sdk@npm:2.27.1":
-  version: 2.27.1
-  resolution: "react-native-esc-pos-printer-sdk@npm:2.27.1"
-  checksum: 3551435b4df1633d5588ef4fbb1e853c6258e5b71d2afb8658df4a48379b710d2f736ec6d0be858627d49cfd96141b577e8a23877aadb0ee12b2731fa86436c1
-  languageName: node
-  linkType: hard
-
-"react-native-esc-pos-printer@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "react-native-esc-pos-printer@workspace:."
+  resolution: "react-native-esc-pos-printer-chunyinli@workspace:."
   dependencies:
     "@commitlint/config-conventional": ^19.5.0
     "@evilmartians/lefthook": ^1.5.0
@@ -10725,6 +10693,38 @@ __metadata:
     react-native: "*"
   languageName: unknown
   linkType: soft
+
+"react-native-esc-pos-printer-example@workspace:example":
+  version: 0.0.0-use.local
+  resolution: "react-native-esc-pos-printer-example@workspace:example"
+  dependencies:
+    "@babel/core": ^7.25.2
+    "@babel/preset-env": ^7.25.3
+    "@babel/runtime": ^7.25.0
+    "@react-native-community/cli": 15.0.1
+    "@react-native-community/cli-platform-android": 15.0.1
+    "@react-native-community/cli-platform-ios": 15.0.1
+    "@react-native/babel-preset": 0.76.5
+    "@react-native/metro-config": 0.76.5
+    "@react-native/typescript-config": 0.76.5
+    "@react-navigation/native": ^6.1.9
+    "@react-navigation/native-stack": ^6.9.17
+    react: 18.3.1
+    react-native: 0.76.5
+    react-native-builder-bob: ^0.32.0
+    react-native-image-picker: ^7.1.0
+    react-native-safe-area-context: ^4.7.4
+    react-native-screens: ^3.27.0
+    react-native-view-shot: ^3.8.0
+  languageName: unknown
+  linkType: soft
+
+"react-native-esc-pos-printer-sdk@npm:2.27.1":
+  version: 2.27.1
+  resolution: "react-native-esc-pos-printer-sdk@npm:2.27.1"
+  checksum: 3551435b4df1633d5588ef4fbb1e853c6258e5b71d2afb8658df4a48379b710d2f736ec6d0be858627d49cfd96141b577e8a23877aadb0ee12b2731fa86436c1
+  languageName: node
+  linkType: hard
 
 "react-native-image-picker@npm:^7.1.0":
   version: 7.2.3
