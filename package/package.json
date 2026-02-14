@@ -1,6 +1,6 @@
 {
-  "name": "react-native-esc-pos-printer",
-  "version": "4.5.0",
+  "name": "@chunyinli/react-native-esc-pos-printer",
+  "version": "4.5.1",
   "description": "An unofficial React Native library for printing on an EPSON TM printer with the Epson ePOS SDK for iOS and Epson ePOS SDK for Android",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
@@ -50,16 +50,17 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tr3v3r/react-native-esc-pos-printer.git"
+    "url": "git+https://github.com/chunyinli/react-native-esc-pos-printer.git"
   },
-  "author": "Aliaksei Astafyeu <lochost40@gmail.com> (https://github.com/tr3v3r)",
+  "author": "Chunyin LI (https://github.com/chunyinli)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/tr3v3r/react-native-esc-pos-printer/issues"
+    "url": "https://github.com/chunyinli/react-native-esc-pos-printer/issues"
   },
-  "homepage": "https://github.com/tr3v3r/react-native-esc-pos-printer#readme",
+  "homepage": "https://github.com/chunyinli/react-native-esc-pos-printer#readme",
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
   },
   "dependencies": {
     "buffer": "6.0.3",
