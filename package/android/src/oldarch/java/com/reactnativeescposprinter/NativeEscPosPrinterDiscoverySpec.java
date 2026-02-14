@@ -20,6 +20,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.common.build.ReactBuildConfig;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
@@ -30,8 +31,11 @@ import javax.annotation.Nullable;
 public abstract class NativeEscPosPrinterDiscoverySpec extends ReactContextBaseJavaModule{
   public static final String NAME = "EscPosPrinterDiscovery";
 
+  private final DeviceEventManagerModule.RCTDeviceEventEmitter mEventEmitterCallback;
+
   public NativeEscPosPrinterDiscoverySpec(ReactApplicationContext reactContext) {
     super(reactContext);
+    mEventEmitterCallback = reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
   }
 
   @Override
