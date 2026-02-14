@@ -1,10 +1,8 @@
 package com.escposprinter;
 
 import com.epson.epos2.Epos2Exception;
-import com.epson.epos2.printer.Printer;
-import com.epson.epos2.printer.PrinterSettingListener;
+import com.epson.epos2.printer.LFCPrinter;
 import com.epson.epos2.printer.PrinterStatusInfo;
-import com.epson.epos2.printer.ReceiveListener;
 import com.epson.epos2.printer.StatusChangeListener;
 import com.epson.epos2.Epos2CallbackCode;
 
@@ -21,9 +19,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Base64;
 
-public class ThePrinter implements PrinterSettingListener, ReceiveListener {
+public class ThePrinter {
 
-    private Printer epos2Printer_ = null; // Printer
+    private LFCPrinter epos2Printer_ = null; // Printer
     private volatile String printerTarget_ = null; // the printer target
     private boolean isConnected_ = false; // cache if printer is connected
     private boolean didBeginTransaction_ = false; // did start Status Monitor
@@ -58,8 +56,7 @@ public class ThePrinter implements PrinterSettingListener, ReceiveListener {
      */
     synchronized public void setupWith(final String printerTarget, final int series, final int lang, Context context) throws Epos2Exception {
         printerTarget_ = printerTarget;
-        epos2Printer_ = new Printer(series, lang, context);
-        epos2Printer_.setReceiveEventListener(this);
+        epos2Printer_ = new LFCPrinter(series, lang, context);
     }
 
 
@@ -85,7 +82,7 @@ public class ThePrinter implements PrinterSettingListener, ReceiveListener {
 
         boolean isConnected = true;
         PrinterStatusInfo info = epos2Printer_.getStatus();
-        if (info.getConnection() == Printer.TRUE) {
+        if (info.getConnection() == LFCPrinter.TRUE) {
             isConnected = true;
         } else {
             isConnected = false;
@@ -133,14 +130,6 @@ public class ThePrinter implements PrinterSettingListener, ReceiveListener {
 
         if (!isConnected_) return;
 
-        if (didBeginTransaction_) {
-            try {
-                endTransaction();
-            } catch (Epos2Exception e) {
-                e.printStackTrace();
-            }
-        }
-
         int count = 20;
         while (true) {
             try {
@@ -169,7 +158,6 @@ public class ThePrinter implements PrinterSettingListener, ReceiveListener {
 
         epos2Printer_.clearCommandBuffer();
         isConnected_ = false;
-        didBeginTransaction_ = false;
 
     }
 
@@ -182,53 +170,29 @@ public class ThePrinter implements PrinterSettingListener, ReceiveListener {
     synchronized public void sendData(int timeout, PrinterCallback handler) throws Epos2Exception {
         if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
 
-        beginTransaction();
         try {
-           epos2Printer_.sendData(timeout);
            printCallback_ = handler;
+           epos2Printer_.sendLFCData(timeout);
         } catch (Epos2Exception e) {
-           endTransaction();
            throw e;
         }
 
     }
 
     /**
-     throws Epos2Exception if there is an error
-     Function beginTransaction see ePOS SDK
+     * LFCPrinter does not support transactions
+     * beginTransaction and endTransaction are no-ops for LFCPrinter
      */
     synchronized public void beginTransaction() throws Epos2Exception {
-        if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
-
-        if (didBeginTransaction_) return;
-
-        try {
-            epos2Printer_.beginTransaction();
-            didBeginTransaction_  = true;
-        } catch (Epos2Exception e) {
-            didBeginTransaction_ = false;
-            e.printStackTrace();
-            throw e;
-        }
+        // No-op: LFCPrinter does not support transactions
     }
 
     /**
-     throws Epos2Exception if there is an error
-     Function endTransaction see ePOS SDK
+     * LFCPrinter does not support transactions
+     * beginTransaction and endTransaction are no-ops for LFCPrinter
      */
     synchronized public void endTransaction() throws Epos2Exception {
-
-        if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
-
-        if (!didBeginTransaction_) return;
-
-        try {
-            epos2Printer_.endTransaction();
-            didBeginTransaction_  = false;
-        } catch (Epos2Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
+        // No-op: LFCPrinter does not support transactions
     }
 
     synchronized public void addText(String data) throws Epos2Exception {
@@ -345,82 +309,21 @@ public class ThePrinter implements PrinterSettingListener, ReceiveListener {
     synchronized public void getPrinterSetting(int timeout, int type, PrinterCallback handler) throws Epos2Exception {
         if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
 
-        beginTransaction();
         try {
-            epos2Printer_.getPrinterSetting(timeout, type, this);
+            epos2Printer_.getPrinterSetting(timeout, type);
             getPrinterSettingCallback_ = handler;
         } catch (Epos2Exception e) {
-            endTransaction();
             throw e;
         }
     }
 
     /**
-     returns Printer
+     returns LFCPrinter
      Function getEpos2Printer
      */
-    synchronized public Printer getEpos2Printer()
+    synchronized public LFCPrinter getEpos2Printer()
     {
         return epos2Printer_;
-    }
-
-    @Override
-    public void onGetPrinterSetting(int code, int type, int value) {
-
-        new Thread(new Runnable() {
-            @Override
-            synchronized public void run() {
-                try {
-                    endTransaction();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                if (getPrinterSettingCallback_ != null) {
-                  if(code == Epos2CallbackCode.CODE_SUCCESS) {
-                   WritableMap returnData = Arguments.createMap();
-                    returnData.putInt("type", type);
-                    returnData.putInt("value",value);
-
-                    getPrinterSettingCallback_.onSuccess(returnData);
-                  } else {
-                    getPrinterSettingCallback_.onError(EposStringHelper.getErrorTextData(code, "code"));
-                  }
-                  getPrinterSettingCallback_ = null;
-                }
-            }
-        }).start();
-    }
-
-    // region ReceiveListener
-    @Override
-    public void onPtrReceive(Printer printer, int code, PrinterStatusInfo status, String printJobId) {
-
-        new Thread(new Runnable() {
-            @Override
-            synchronized public void run() {
-                try {
-                    endTransaction();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                if (printCallback_ != null) {
-                  if(code == Epos2CallbackCode.CODE_SUCCESS) {
-                    WritableMap returnData = EposStringHelper.convertStatusInfoToWritableMap(status);
-                    printCallback_.onSuccess(returnData);
-                  } else {
-                    printCallback_.onError(EposStringHelper.getErrorTextData(code, "code"));
-                  }
-                  printCallback_ = null;
-                }
-            }
-        }).start();
-
-    }
-
-
-    @Override
-    public void onSetPrinterSetting(int code) {
-
     }
 
 }
