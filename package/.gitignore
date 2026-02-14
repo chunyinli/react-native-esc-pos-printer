@@ -87,3 +87,7 @@ android/generated
 ios/PrinterSDK
 android/libs
 android/src/main/jniLibs
+
+# NPM config
+.npmrc
+package/.npmrc
