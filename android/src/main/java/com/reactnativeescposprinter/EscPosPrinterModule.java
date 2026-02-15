@@ -16,7 +16,7 @@ import java.util.Map;
 
 import android.content.Context;
 
-import com.epson.epos2.printer.Printer;
+import com.epson.epos2.printer.LFCPrinter;
 import com.epson.epos2.Epos2Exception;
 
 import com.facebook.react.bridge.WritableMap;
@@ -65,7 +65,7 @@ public class EscPosPrinterModule extends ReactContextBaseJavaModule {
           thePrinter.setupWith(target, series, lang, mContext);
         }
 
-        Printer mPrinter = thePrinter.getEpos2Printer();
+        LFCPrinter mPrinter = thePrinter.getEpos2Printer();
 
         if(mPrinter == null) {
           promise.reject(EposStringHelper.getErrorTextData(Epos2Exception.ERR_MEMORY, ""));

@@ -97,7 +97,7 @@ export class Printer {
   };
 
   sendData = (timeout?: number, jobNumber?: number) => {
-    return this.printerWrapper.sendData(timeout);
+    return this.printerWrapper.sendData(timeout, jobNumber);
   };
 
   addCut = (type?: AddCutTypeParam) => {

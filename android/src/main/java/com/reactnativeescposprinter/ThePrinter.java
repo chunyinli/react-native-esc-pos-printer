@@ -307,14 +307,7 @@ public class ThePrinter implements LFCPrintCompleteListener {
      Function getPrinterSetting see ePOS SDK
      */
     synchronized public void getPrinterSetting(int timeout, int type, PrinterCallback handler) throws Epos2Exception {
-        if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
-
-        try {
-            epos2Printer_.getPrinterSetting(timeout, type);
-            getPrinterSettingCallback_ = handler;
-        } catch (Epos2Exception e) {
-            throw e;
-        }
+        // No-op: LFCPrinter does not support transactions
     }
 
     /**
