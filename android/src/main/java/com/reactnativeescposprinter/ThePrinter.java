@@ -2,7 +2,8 @@ package com.escposprinter;
 
 import com.epson.epos2.Epos2Exception;
 import com.epson.epos2.printer.LFCPrinter;
-import com.epson.epos2.printer.PrinterStatusInfo;
+import com.epson.epos2.printer.LFCPrinterStatusInfo;
+import com.epson.epos2.printer.LFCPrintCompleteListener;
 import com.epson.epos2.printer.StatusChangeListener;
 import com.epson.epos2.Epos2CallbackCode;
 
@@ -19,7 +20,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Base64;
 
-public class ThePrinter {
+public class ThePrinter implements LFCPrintCompleteListener {
 
     private LFCPrinter epos2Printer_ = null; // Printer
     private volatile String printerTarget_ = null; // the printer target
@@ -81,7 +82,7 @@ public class ThePrinter {
         if (epos2Printer_ == null) return false;
 
         boolean isConnected = true;
-        PrinterStatusInfo info = epos2Printer_.getStatus();
+        LFCPrinterStatusInfo info = epos2Printer_.getStatus();
         if (info.getConnection() == LFCPrinter.TRUE) {
             isConnected = true;
         } else {
@@ -167,7 +168,7 @@ public class ThePrinter {
       epos2Printer_.clearCommandBuffer();
     }
 
-    synchronized public void sendData(int timeout, PrinterCallback handler) throws Epos2Exception {
+    synchronized public void sendData(int timeout, int jobNumber, inPrinterCallback handler) throws Epos2Exception {
         if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
 
         try {
@@ -176,7 +177,6 @@ public class ThePrinter {
         } catch (Epos2Exception e) {
            throw e;
         }
-
     }
 
     /**
@@ -297,7 +297,7 @@ public class ThePrinter {
 
     synchronized public WritableMap getStatus() throws Epos2Exception {
       if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
-      PrinterStatusInfo status = epos2Printer_.getStatus();
+      LFCPrinterStatusInfo status = epos2Printer_.getStatus();
       WritableMap statusMap = EposStringHelper.convertStatusInfoToWritableMap(status);
       return statusMap;
     }
@@ -324,6 +324,46 @@ public class ThePrinter {
     synchronized public LFCPrinter getEpos2Printer()
     {
         return epos2Printer_;
+    }
+
+    // region ReceiveListener
+    @Override
+    public void onPrintComplete(LFCPrinter lfcPrinterObj, String printJobId) {
+
+        new Thread(new Runnable() {
+            @Override
+            synchronized public void run() {
+                if (printCallback_ != null) {
+                    try {
+                        // Get printer status using the passed printer object
+                        LFCPrinterStatusInfo status = lfcPrinterObj.getStatus();
+                        WritableMap returnData = EposStringHelper.convertStatusInfoToWritableMap(status);
+                        
+                        // Return to JavaScript
+                        printCallback_.onSuccess(returnData);
+                    } catch (Exception e) {
+                        printCallback_.onError(e.getMessage());
+                    }
+                    printCallback_ = null;
+                }
+                // try {
+                //     endTransaction();
+                // } catch (Exception e) {
+                //     e.printStackTrace();
+                // }
+                // if (printCallback_ != null) {
+                //   if(code == Epos2CallbackCode.CODE_SUCCESS) {
+
+                //     WritableMap returnData = EposStringHelper.convertStatusInfoToWritableMap(status);
+                //     printCallback_.onSuccess(returnData);
+                //   } else {
+                //     printCallback_.onError(EposStringHelper.getErrorTextData(code, "code"));
+                //   }
+                //   printCallback_ = null;
+                // }
+            }
+        }).start();
+
     }
 
 }

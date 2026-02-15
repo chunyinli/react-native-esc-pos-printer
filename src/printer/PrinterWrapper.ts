@@ -162,9 +162,13 @@ export class PrinterWrapper {
     }
   };
 
-  sendData = async (timeout: number = 5000) => {
+  sendData = async (timeout: number = 5000, jobNumber?: number) => {
     try {
-      const result = await EscPosPrinter.sendData(this.target, timeout);
+      const result = await EscPosPrinter.sendData(
+        this.target,
+        timeout,
+        jobNumber
+      );
       return parsePrinterStatus(result);
     } catch (error) {
       const { errorType, data } = processComplextError(error.message);

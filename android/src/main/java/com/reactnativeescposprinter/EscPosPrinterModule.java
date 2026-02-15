@@ -365,13 +365,13 @@ public class EscPosPrinterModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    synchronized public void sendData(String target, int timeout, Promise promise) {
+    synchronized public void sendData(String target, int timeout, int jobNumber, Promise promise) {
       ThePrinter thePrinter = thePrinterManager_.getObject(target);
       if (thePrinter == null) {
         promise.reject(EposStringHelper.getErrorTextData(ERR_INIT, "result"));
       } else {
           try {
-            thePrinter.sendData(timeout, new PrinterCallback() {
+            thePrinter.sendData(timeout, jobNumber, new PrinterCallback() {
             @Override
             public void onSuccess(WritableMap returnData) {
               promise.resolve(returnData);

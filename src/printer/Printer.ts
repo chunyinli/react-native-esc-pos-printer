@@ -96,7 +96,7 @@ export class Printer {
     return this.printerWrapper.addLineSpace(linespc);
   };
 
-  sendData = (timeout?: number) => {
+  sendData = (timeout?: number, jobNumber?: number) => {
     return this.printerWrapper.sendData(timeout);
   };
 
