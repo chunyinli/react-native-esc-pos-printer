@@ -168,12 +168,12 @@ public class ThePrinter implements LFCPrintCompleteListener {
       epos2Printer_.clearCommandBuffer();
     }
 
-    synchronized public void sendData(int timeout, int jobNumber, inPrinterCallback handler) throws Epos2Exception {
+    synchronized public void sendData(int timeout, int jobNumber, PrinterCallback handler) throws Epos2Exception {
         if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
 
         try {
            printCallback_ = handler;
-           epos2Printer_.sendLFCData(timeout);
+           epos2Printer_.sendLFCData(timeout, jobNumber);
         } catch (Epos2Exception e) {
            throw e;
         }
@@ -298,7 +298,12 @@ public class ThePrinter implements LFCPrintCompleteListener {
     synchronized public WritableMap getStatus() throws Epos2Exception {
       if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
       LFCPrinterStatusInfo status = epos2Printer_.getStatus();
-      WritableMap statusMap = EposStringHelper.convertStatusInfoToWritableMap(status);
+      WritableMap statusMap = Arguments.createMap();
+      statusMap.putInt("connection", status.getConnection());
+      statusMap.putInt("battery", status.getBattery());
+      statusMap.putInt("coverOpen", status.getCoverOpen());
+      statusMap.putInt("paperEmpty", status.getPaperEmpty());
+      statusMap.putInt("paperNearEmpty", status.getPaperNearEmpty());
       return statusMap;
     }
 
@@ -319,7 +324,7 @@ public class ThePrinter implements LFCPrintCompleteListener {
         return epos2Printer_;
     }
 
-    // region ReceiveListener
+    // region LFCPrintCompleteListener
     @Override
     public void onPrintComplete(LFCPrinter lfcPrinterObj, String printJobId) {
 
@@ -330,7 +335,12 @@ public class ThePrinter implements LFCPrintCompleteListener {
                     try {
                         // Get printer status using the passed printer object
                         LFCPrinterStatusInfo status = lfcPrinterObj.getStatus();
-                        WritableMap returnData = EposStringHelper.convertStatusInfoToWritableMap(status);
+                        WritableMap returnData = Arguments.createMap();
+                        returnData.putInt("connection", status.getConnection());
+                        returnData.putInt("battery", status.getBattery());
+                        returnData.putInt("coverOpen", status.getCoverOpen());
+                        returnData.putInt("paperEmpty", status.getPaperEmpty());
+                        returnData.putInt("paperNearEmpty", status.getPaperNearEmpty());
                         
                         // Return to JavaScript
                         printCallback_.onSuccess(returnData);
