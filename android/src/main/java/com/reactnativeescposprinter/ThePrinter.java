@@ -300,10 +300,10 @@ public class ThePrinter implements LFCPrintCompleteListener {
       LFCPrinterStatusInfo status = epos2Printer_.getStatus();
       WritableMap statusMap = Arguments.createMap();
       statusMap.putInt("connection", status.getConnection());
-      statusMap.putInt("battery", status.getBattery());
+      statusMap.putInt("online", status.getOnline());
       statusMap.putInt("coverOpen", status.getCoverOpen());
-      statusMap.putInt("paperEmpty", status.getPaperEmpty());
-      statusMap.putInt("paperNearEmpty", status.getPaperNearEmpty());
+      statusMap.putInt("paper", status.getPaper());
+      statusMap.putInt("errorStatus", status.getErrorStatus());
       return statusMap;
     }
 
@@ -326,7 +326,7 @@ public class ThePrinter implements LFCPrintCompleteListener {
 
     // region LFCPrintCompleteListener
     @Override
-    public void onPrintComplete(LFCPrinter lfcPrinterObj, String printJobId) {
+    public void onPrintComplete(LFCPrinter lfcPrinterObj, int printJobId) {
 
         new Thread(new Runnable() {
             @Override
@@ -337,10 +337,11 @@ public class ThePrinter implements LFCPrintCompleteListener {
                         LFCPrinterStatusInfo status = lfcPrinterObj.getStatus();
                         WritableMap returnData = Arguments.createMap();
                         returnData.putInt("connection", status.getConnection());
-                        returnData.putInt("battery", status.getBattery());
+                        returnData.putInt("online", status.getOnline());
                         returnData.putInt("coverOpen", status.getCoverOpen());
-                        returnData.putInt("paperEmpty", status.getPaperEmpty());
-                        returnData.putInt("paperNearEmpty", status.getPaperNearEmpty());
+                        returnData.putInt("paper", status.getPaper());
+                        returnData.putInt("errorStatus", status.getErrorStatus());
+                        returnData.putInt("code", code);
                         
                         // Return to JavaScript
                         printCallback_.onSuccess(returnData);
