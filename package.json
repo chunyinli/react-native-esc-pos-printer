@@ -1,6 +1,6 @@
 {
   "name": "react-native-esc-pos-printer-chunyinli",
-  "version": "4.5.9",
+  "version": "4.5.10",
   "description": "s",
   "source": "./src/index.tsx",
   "main": "./lib/commonjs/index.js",
