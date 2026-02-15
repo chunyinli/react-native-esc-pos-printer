@@ -300,13 +300,14 @@ public class EscPosPrinterModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     synchronized public void addImage(String target, ReadableMap source, int width, int color,
-                                      int mode, int halftone, double brightness, int compress, Promise promise) {
+                                      int mode, int halftone, Double brightness, int compress, Promise promise) {
       ThePrinter thePrinter = thePrinterManager_.getObject(target);
       if (thePrinter == null) {
         promise.reject(EposStringHelper.getErrorTextData(ERR_INIT, ""));
       } else {
         try {
-          thePrinter.addImage(source, mContext, width, color, mode, halftone, brightness, compress);
+          double brightnessValue = brightness != null ? brightness : 1.0;
+          thePrinter.addImage(source, mContext, width, color, mode, halftone, brightnessValue, compress);
           promise.resolve(null);
         } catch(Exception e) {
           processError(promise, e, "");
