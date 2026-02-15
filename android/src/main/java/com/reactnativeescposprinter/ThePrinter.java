@@ -341,7 +341,7 @@ public class ThePrinter implements LFCPrintCompleteListener {
                         returnData.putInt("coverOpen", status.getCoverOpen());
                         returnData.putInt("paper", status.getPaper());
                         returnData.putInt("errorStatus", status.getErrorStatus());
-                        returnData.putInt("code", code);
+                        returnData.putInt("printJobId", printJobId);
                         
                         // Return to JavaScript
                         printCallback_.onSuccess(returnData);
